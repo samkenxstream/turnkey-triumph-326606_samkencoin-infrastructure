@@ -145,6 +145,18 @@
   service: name=systemd-swap state=started enabled=yes
   when: enable_zram_swap
 
+- name: create drop-in directories for oomd
+  file: path=/etc/systemd/system/{{ item }}.d state=directory owner=root group=root mode=0755
+  with_items:
+    - "-.slice"
+    - user@.service
+
+- name: install drop-in snippets for oomd
+  copy: src=oomd-override_{{ item }}.conf dest=/etc/systemd/system/{{ item }}.d/override.conf owner=root group=root mode=0644
+  with_items:
+    - "-.slice"
+    - user@.service
+
 - name: start systemd-oomd
   service: name=systemd-oomd state=started enabled=yes
 
