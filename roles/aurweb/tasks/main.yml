@@ -30,6 +30,9 @@
   user: name="{{ aurweb_user }}" shell=/bin/bash createhome=yes
 
 - name: Create directory
+  file: path={{ aurweb_prom_dir }} state=directory owner={{ aurweb_user }} group=http mode=0775
+
+- name: Create directory
   file: path={{ aurweb_dir }} state=directory owner={{ aurweb_user }} group=http mode=0775
 
 - name: receive valid signing keys
