@@ -30,6 +30,9 @@ if [[ -d /var/lib/postgres/data-$FROM_VERSION ]]; then
 	exit 3
 fi
 
+## Copy the locale from the old cluster
+locale=$(sudo -u postgres psql -A -t --dbname=template1 -c 'SHOW lc_collate;')
+
 # mask postgresql.service to make sure that other services with
 # Wants=postgresql.service and Restart=on-failure will not start
 # it again during the upgrade
@@ -42,7 +45,7 @@ chown postgres:postgres /var/lib/postgres/
 su - postgres -c "mv /var/lib/postgres/data /var/lib/postgres/data-$FROM_VERSION"
 su - postgres -c 'mkdir /var/lib/postgres/data'
 su - postgres -c 'chattr -f +C /var/lib/postgres/data' || :
-su - postgres -c 'initdb --locale en_US.UTF-8 -E UTF8 -D /var/lib/postgres/data'
+su - postgres -c "initdb --locale=$locale -E UTF8 -D /var/lib/postgres/data"
 vimdiff /var/lib/postgres/{data,data-$FROM_VERSION}/pg_hba.conf
 vimdiff /var/lib/postgres/{data,data-$FROM_VERSION}/postgresql.conf
 

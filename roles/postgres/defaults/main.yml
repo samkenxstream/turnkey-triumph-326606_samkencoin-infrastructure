@@ -21,3 +21,5 @@ postgres_ssl_hosts4: []
 postgres_ssl_hosts6: []
 
 postgres_backup_dir: '/root/backup-postgres'
+
+postgres_locale: 'en_US.UTF-8'
