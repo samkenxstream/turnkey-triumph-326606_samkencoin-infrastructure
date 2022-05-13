@@ -1,6 +1,6 @@
 ---
 archweb_db_host: "{{ hostvars['archlinux.org']['wireguard_address'] }}"
-geo_mirror_domain: "geo.mirror.pkgbuild.com"
+acme_challenge_zone: "acme-challenge.archlinux.org"
 
 # raise tcp window limits to 32MiB
 tcp_rmem: "10240 87380 33554432"

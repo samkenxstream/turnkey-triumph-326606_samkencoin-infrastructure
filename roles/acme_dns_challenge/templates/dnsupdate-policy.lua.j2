@@ -1,6 +1,6 @@
 -- Based on https://github.com/PowerDNS/pdns/wiki/Lua-Examples-(Authoritative)#updatepolicy-access-control-for-rfc2136-dynamic-updates
 function updatepolicy(input)
-  acme_challenge_rrname = "_acme-challenge.{{ geo_mirror_domain }}."
+  acme_challenge_rrname = "{{ acme_challenge_zone }}."
 
   -- only allow updates from our servers
   mynetworks = newNMG()

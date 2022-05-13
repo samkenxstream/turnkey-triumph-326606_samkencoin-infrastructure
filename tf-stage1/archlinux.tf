@@ -369,7 +369,7 @@ locals {
   geo_domains = {
     "geo.mirror.pkgbuild.com" = {
       zone_id = hetznerdns_zone.pkgbuild.id
-      name = "geo.mirror"
+      name    = "geo.mirror"
     }
   }
 }
@@ -437,6 +437,14 @@ resource "hetznerdns_record" "pkgbuild_com_origin_txt" {
   name    = "@"
   value   = "\"v=spf1 -all\""
   type    = "TXT"
+}
+
+resource "hetznerdns_record" "archlinux_org_acme_challenge_ns" {
+  zone_id = hetznerdns_zone.archlinux.id
+  name    = "acme-challenge"
+  value   = "mirror.pkgbuild.com."
+  type    = "NS"
+  ttl     = 86400
 }
 
 resource "hetznerdns_record" "archlinux_org_origin_caa" {

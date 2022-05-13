@@ -1,0 +1,46 @@
+---
+- name: install powerdns
+  pacman: name=powerdns state=present
+
+- name: install PowerDNS configuration
+  template: src={{ item.src }} dest=/etc/powerdns/{{ item.dest }} owner=root group=root mode=0644
+  loop:
+    - {src: pdns.conf.j2, dest: pdns.conf}
+    - {src: dnsupdate-policy.lua.j2, dest: dnsupdate-policy.lua}
+  notify: restart powerdns
+
+- name: create directory for sqlite3 dbs
+  file: path=/var/lib/powerdns state=directory owner=powerdns group=powerdns mode=0755
+
+- name: initialize sqlite3 database for acme-challenge zone
+  command: sqlite3 -init /usr/share/doc/powerdns/schema.sqlite3.sql /var/lib/powerdns/pdns.sqlite3 ""
+  become: true
+  become_user: powerdns
+  args:
+    creates: /var/lib/powerdns/pdns.sqlite3
+  register: init
+
+- name: create acme-challenge zone
+  command: "{{ item }}"
+  loop:
+    - pdnsutil create-zone {{ acme_challenge_zone }} {{ inventory_hostname }}
+    - pdnsutil replace-rrset {{ acme_challenge_zone }} @ SOA "{{ inventory_hostname }}. root.archlinux.org. 0 10800 3600 604800 3600"
+  become: true
+  become_user: powerdns
+  when: init.changed
+
+- name: import TSIG key (for certbot)
+  command: pdnsutil import-tsig-key {{ certbot_rfc2136_key }} {{ certbot_rfc2136_algorithm }} {{ certbot_rfc2136_secret }}
+  changed_when: false
+
+- name: open powerdns ipv4 port for monitoring.archlinux.org
+  ansible.posix.firewalld: zone=wireguard state=enabled permanent=true immediate=yes
+    rich_rule="rule family=ipv4 source address={{ hostvars['monitoring.archlinux.org']['wireguard_address'] }} port protocol=tcp port=8081 accept"
+  tags:
+    - firewall
+
+- name: open firewall hole
+  ansible.posix.firewalld: service=dns permanent=true state=enabled immediate=yes
+
+- name: start and enable powerdns
+  systemd: name=pdns.service enabled=yes daemon_reload=yes state=started
