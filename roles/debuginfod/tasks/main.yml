@@ -7,6 +7,7 @@
     name: certificate
   vars:
     domains: ["{{ debuginfod_domain }}"]
+    challenge: "{{ 'DNS-01' if 'geo_mirrors' in group_names else 'HTTP-01' }}"
   when: debuginfod_domain
 
 - name: configure debuginfod systemd service

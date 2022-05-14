@@ -16,3 +16,4 @@
     - { role: fail2ban }
     - { role: wireguard }
     - { role: geo_dns, when: "'geo_mirrors' in group_names" }
+    - { role: debuginfod, when: "'geo_mirrors' in group_names" }

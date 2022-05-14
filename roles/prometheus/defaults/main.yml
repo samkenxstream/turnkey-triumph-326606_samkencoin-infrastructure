@@ -17,6 +17,9 @@ blackbox_targets:
     - targets: "{{ groups['geo_mirrors'] }}"
       hostname: geo.mirror.pkgbuild.com
       secure: true
+    - targets: "{{ groups['geo_mirrors'] }}"
+      hostname: debuginfod.archlinux.org
+      secure: true
     - http://{{ hostvars['monitoring.archlinux.org']['wireguard_address'] }}
     - https://accounts.archlinux.org
     - https://america.archive.pkgbuild.com
@@ -30,7 +33,6 @@ blackbox_targets:
     - https://bugs.archlinux.org
     - https://conf.archlinux.org
     - https://dashboards.archlinux.org/healthz
-    - https://debuginfod.archlinux.org
     - https://dev.archlinux.org
     - https://europe.archive.pkgbuild.com
     - https://europe.mirror.pkgbuild.com
@@ -77,6 +79,8 @@ blackbox_targets:
     - lists.archlinux.org:25
   geo_dns_geo.mirror.pkgbuild.com_a: "{{ groups['geo_mirrors'] }}"
   geo_dns_geo.mirror.pkgbuild.com_aaaa: "{{ groups['geo_mirrors'] }}"
+  geo_dns_debuginfod.archlinux.org_a: "{{ groups['geo_mirrors'] }}"
+  geo_dns_debuginfod.archlinux.org_aaaa: "{{ groups['geo_mirrors'] }}"
 matrix_metrics_endpoints:
   - homeserver
   - appservice

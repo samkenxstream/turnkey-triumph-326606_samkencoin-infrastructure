@@ -146,7 +146,7 @@ locals {
     },
     "debuginfod.archlinux.org" = {
       server_type = "cx11"
-      domain      = "debuginfod"
+      domain      = "debuginfod-old"
     }
     "buildbot.pkgbuild.com" = {
       server_type = "cx21"
@@ -370,6 +370,10 @@ locals {
     "geo.mirror.pkgbuild.com" = {
       zone_id = hetznerdns_zone.pkgbuild.id
       name    = "geo.mirror"
+    }
+    "debuginfod.archlinux.org" = {
+      zone_id = hetznerdns_zone.archlinux.id
+      name    = "debuginfod"
     }
   }
 }
